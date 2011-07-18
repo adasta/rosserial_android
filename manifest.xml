@@ -1,0 +1,19 @@
+<package>
+  <description brief="rosserial_android">
+
+     rosserial_android
+
+  </description>
+  <author>Adam Stambler</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/rosserial_android</url>
+  <depend package="rosjava"/>
+  <depend package="std_msgs"/>
+  <depend package="sensor_msgs"/>
+  <depend package="nav_msgs"/>
+  <depend package="rosserial_msgs"/>
+
+</package>
+
+
