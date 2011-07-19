@@ -218,7 +218,6 @@ public class RosSerial implements Runnable{
 			case FLAGB:
 				if (buff[0] == (byte) 0xff  ) {
 					parse_state = PARSE_STATE.ID;
-					chk =0;
 					return 2;
 				}
 				else{
@@ -228,18 +227,22 @@ public class RosSerial implements Runnable{
 			case ID:
 				//Read topic id and add it to the checksum
 				//little endian
-				chk += buff[0]; chk+= buff[1];
+				chk += ( 0xff & buff[0]); chk+= (int)( 0xff & buff[1]);
 				topic_id = (int)(buff[1] <<  8) | (int)(buff[0]);
 				parse_state = PARSE_STATE.LENGTH;
 				return 2;
 			case LENGTH:
-				chk += buff[0]; chk+= buff[1];
+				chk += ( 0xff & buff[0]); chk+= (int)( 0xff & buff[1]);
 				int l_data = (int)(buff[1] <<  8) | (int)(buff[0]);
 				parse_state = PARSE_STATE.DATA;
 				return l_data +1; //plus one for checksum
 			case DATA:
-				for(int i =0; i< buff.length; i++) chk+= buff[i];
-								
+				StringBuilder sb = new StringBuilder(buff.length*6);
+
+				for(int i =0; i <buff.length; i++) sb.append( Integer.toString((int) buff[i] & 0xff) + " ");
+				//System.out.println("The data : " + sb.toString());
+				for(int i =0; i< buff.length; i++) chk += ( 0xff & buff[i]); 
+
 				if (chk%256 == 255){ //valid checksum
 					resetParseStateMachine();
 					switch(topic_id){
@@ -248,8 +251,6 @@ public class RosSerial implements Runnable{
 							TopicInfo m =  new TopicInfo();
 							m.deserialize(buff);
 							addTopic(m.topic_name, m.message_type, m.topic_id, true);
-							if (onPublicationCB!= null)
-								onPublicationCB.onNegotiation(new ROSTopic(m.topic_name, m.message_type));
 							break;
 							}
 						case TOPIC_SUBSCRIBERS:
@@ -257,8 +258,6 @@ public class RosSerial implements Runnable{
 							TopicInfo m =  new TopicInfo();
 							m.deserialize(buff);
 							addTopic(m.topic_name, m.message_type, m.topic_id, false);
-							if (onSubscriptionCB!= null)
-								onSubscriptionCB.onNegotiation(new ROSTopic(m.topic_name, m.message_type));
 							break;
 							}
 						case TOPIC_TIME:
@@ -275,8 +274,9 @@ public class RosSerial implements Runnable{
 					}
 				}
 				else{
+					System.out.println("Checksum failed! chk = "+Integer.toString(chk%256));
+
 					resetParseStateMachine();
-					System.out.println("Checksum failed!");
 				}
 		}
 		
