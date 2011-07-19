@@ -59,7 +59,8 @@ public class RosSerial implements Runnable{
 	Node node;
 	
 	OutputStream ostream;
-	InputStream istream;
+	//InputStream istream;
+	BufferedInputStream istream;
 	
 
 	public class ROSTopic {
@@ -139,7 +140,8 @@ public class RosSerial implements Runnable{
 	public RosSerial(Node nh, InputStream input, OutputStream output){
 		node = nh;
 		ostream = output;
-		istream = input;
+		istream = new BufferedInputStream(input,100);
+		parse_state = PARSE_STATE.FLAGA;
 		requestTopics();
 
 		}
@@ -288,17 +290,22 @@ public class RosSerial implements Runnable{
 		requestTopics();
 	    System.out.println("Topics requested");
 
-	    byte buff[] = new byte[1];
+	    byte buff[] = new byte[200];
 	    int len_requested=1;
 	    int len_data=0;
 	    
 		while (running){
 			try{
-		    	len_data += istream.read(buff, len_data, len_requested-len_data); 
-				if (len_data == len_requested){
+		    	int b = istream.read(); 
+		    	if (b!= -1){
+		    		buff[len_data] = (byte) (0xff & b) ;
+		    		++len_data;
+		    	}
+				if (len_data >= len_requested){
 					len_requested = parseData(buff);
 					len_data = 0;
 					buff = new byte[len_requested];
+					System.out.print("Length Requested : " + len_requested);
 				}
 				Thread.sleep(1);
 			}

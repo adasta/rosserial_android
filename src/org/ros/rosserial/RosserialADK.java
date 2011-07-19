@@ -134,9 +134,9 @@ public class RosserialADK {
 			fd = mFileDescriptor.getFileDescriptor();
 			mInputStream = new FileInputStream(fd);
 			mOutputStream = new FileOutputStream(fd);
-			//rosserial =  new RosSerial(node, mInputStream, mOutputStream);
-			//ioThread = new Thread(rosserial);
-			//ioThread.start();
+			rosserial =  new RosSerial(node, mInputStream, mOutputStream);
+			ioThread = new Thread(rosserial);
+			ioThread.start();
 			if (connectionCB != null) connectionCB.trigger(true);
 			System.out.println("accessory opened");
 			return true;
@@ -204,12 +204,12 @@ public class RosserialADK {
 	
 	//Set Callback function for new subscription
 	void setOnSubscriptionCB(onNegotionListener cb){
-		rosserial.setOnSubscriptionCB(cb);
+		if (rosserial!= null) rosserial.setOnSubscriptionCB(cb);
 	}
 	
 	//Set Callback for new publication
 	void setOnPublicationCB(onNegotionListener cb){
-		rosserial.setOnPublicationCB(cb);
+		if (rosserial!= null) rosserial.setOnPublicationCB(cb);
 	}
 	 
 }
