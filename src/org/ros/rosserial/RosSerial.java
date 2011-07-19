@@ -248,8 +248,8 @@ public class RosSerial implements Runnable{
 							TopicInfo m =  new TopicInfo();
 							m.deserialize(buff);
 							addTopic(m.topic_name, m.message_type, m.topic_id, true);
-							//if (onPublicationCB!= null)
-							//	onPublicationCB.onNegotiation(new ROSTopic(m.topic_name, m.message_type));
+							if (onPublicationCB!= null)
+								onPublicationCB.onNegotiation(new ROSTopic(m.topic_name, m.message_type));
 							break;
 							}
 						case TOPIC_SUBSCRIBERS:
@@ -257,8 +257,8 @@ public class RosSerial implements Runnable{
 							TopicInfo m =  new TopicInfo();
 							m.deserialize(buff);
 							addTopic(m.topic_name, m.message_type, m.topic_id, false);
-							//if (onSubscriptionCB!= null)
-							//	onSubscriptionCB.onNegotiation(new ROSTopic(m.topic_name, m.message_type));
+							if (onSubscriptionCB!= null)
+								onSubscriptionCB.onNegotiation(new ROSTopic(m.topic_name, m.message_type));
 							break;
 							}
 						case TOPIC_TIME:
@@ -305,7 +305,6 @@ public class RosSerial implements Runnable{
 					len_requested = parseData(buff);
 					len_data = 0;
 					buff = new byte[len_requested];
-					System.out.print("Length Requested : " + len_requested);
 				}
 				Thread.sleep(1);
 			}

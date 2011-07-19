@@ -72,17 +72,17 @@ public class RosserialLauncherActivity extends Activity {
 				public void onNegotiation(ROSTopic topic) {
 					// TODO Auto-generated method stub
 					TextView v = (TextView) findViewById(R.id.PublicationsView);
-					//ROSTopic[] topics = adk.getPublications();
-					//StringBuilder txt = new StringBuilder(300);
-					//txt.append("Publishing : \n");
-				//	for (int i=0; i< topics.length; i++){
-				//		txt.append( topics[i].name);
-				//		txt.append(" : ");
-					//	txt.append(topics[i].type);
-			//			txt.append("\n");
-			//		}
+					ROSTopic[] topics = adk.getPublications();
+					StringBuilder txt = new StringBuilder(300);
+					txt.append("Publishing : \n");
+					for (int i=0; i< topics.length; i++){
+						txt.append( topics[i].name);
+						txt.append(" : ");
+						txt.append(topics[i].type);
+						txt.append("\n");
+					}
 					
-				//	mHandler.post(new TextViewHandler(v, "Got a publication") );
+					mHandler.post(new TextViewHandler(v, "Got a publication") );
 				}
 			});
 			
@@ -90,7 +90,6 @@ public class RosserialLauncherActivity extends Activity {
 				
 			adk.open();
 		}
-		
 	}
 
 	@Override
