@@ -170,10 +170,10 @@ public class RosserialADK {
 			if (mFileDescriptor != null) {
 				if(rosserial!=null) {
 					rosserial.shutdown();
-					ioThread.interrupt();
 					rosserial = null;
 				}
-				
+				mInputStream.close();
+				mOutputStream.close();
 				mFileDescriptor.close();
 			}
 		} catch (IOException e) {
