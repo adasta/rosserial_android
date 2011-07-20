@@ -32,6 +32,7 @@ public class RosserialLauncherActivity extends Activity {
 		public void run() {
 			// TODO Auto-generated method stub
 		view.setText(msg);
+		
 		}
 		
 	}
@@ -72,17 +73,17 @@ public class RosserialLauncherActivity extends Activity {
 				public void onNegotiation(ROSTopic topic) {
 					// TODO Auto-generated method stub
 					TextView v = (TextView) findViewById(R.id.PublicationsView);
-					//ROSTopic[] topics = adk.getPublications();
-					//StringBuilder txt = new StringBuilder(300);
-					//txt.append("Publishing : \n");
-				//	for (int i=0; i< topics.length; i++){
-				//		txt.append( topics[i].name);
-				//		txt.append(" : ");
-					//	txt.append(topics[i].type);
-			//			txt.append("\n");
-			//		}
+					ROSTopic[] topics = adk.getPublications();
+					StringBuilder txt = new StringBuilder(300);
+					txt.append("Publishing : \n");
+					for (int i=0; i< topics.length; i++){
+						txt.append( topics[i].name);
+						txt.append(" : ");
+						txt.append(topics[i].type);
+						txt.append("\n");
+					}
 					
-				//	mHandler.post(new TextViewHandler(v, "Got a publication") );
+					v.post(new TextViewHandler(v, "Got a publication") );
 				}
 			});
 			
@@ -97,8 +98,6 @@ public class RosserialLauncherActivity extends Activity {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		if (adk!=null) this.adk.shutdown();
-		this.finish();
 	}
 
 	@Override
@@ -111,7 +110,8 @@ public class RosserialLauncherActivity extends Activity {
 	protected void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
-		
+		if (adk!=null) this.adk.shutdown();
+		this.nh.shutdown();
 	}
 	
 	
